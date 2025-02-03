@@ -1,0 +1,231 @@
+{
+    "version": 4,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 23,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "base",
+            "hidden": true,
+            "binaryDir": "${sourceDir}/build",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "YES",
+                "BUILD_TESTS": "ON",
+                "BUILD_EXAMPLES": "ON"
+            }
+        },
+        {
+            "name": "base-coverage",
+            "hidden": true,
+            "inherits": "base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Coverage"
+            }
+        },
+        {
+            "name": "base-vcpkg",
+            "hidden": true,
+            "inherits": "base",
+            "toolchainFile": "${fileDir}/vcpkg/scripts/buildsystems/vcpkg.cmake"
+        },
+        {
+            "name": "default",
+            "description": "Default build",
+            "inherits": "base",
+            "hidden": false,
+            "binaryDir": "${sourceDir}/build"
+        },
+        {
+            "name": "debug",
+            "description": "Debug build",
+            "inherits": "base",
+            "hidden": false
+        },
+        {
+            "name": "release",
+            "description": "Release build",
+            "inherits": "base",
+            "hidden": false,
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "coverage-clang",
+            "description": "Coverage build with clang",
+            "inherits": "base-coverage",
+            "hidden": false,
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "clang++"
+            }
+        },
+        {
+            "name": "coverage-gcc",
+            "description": "Coverage build with gcc",
+            "inherits": "base-coverage",
+            "hidden": false,
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "g++"
+            }
+        },
+        {
+            "name": "mm-clang",
+            "description": "Maintainer mode build with clang",
+            "inherits": "base",
+            "hidden": false,
+            "cacheVariables": {
+                "ENABLE_MAINTAINER_MODE": "ON",
+                "CMAKE_CXX_COMPILER": "clang++"
+            }
+        },
+        {
+            "name": "mm-gcc",
+            "description": "Maintainer mode build with gcc",
+            "inherits": "base",
+            "hidden": false,
+            "cacheVariables": {
+                "ENABLE_MAINTAINER_MODE": "ON",
+                "CMAKE_CXX_COMPILER": "g++"
+            }
+        },
+        {
+            "name": "debug-vcpkg",
+            "description": "Debug + vcpkg",
+            "inherits": "base-vcpkg",
+            "hidden": false
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "base",
+            "hidden": true,
+            "verbose": true,
+            "jobs": 0
+        },
+        {
+            "name": "default",
+            "description": "Default build",
+            "inherits": "base",
+            "hidden": false,
+            "configurePreset": "default"
+        },
+        {
+            "name": "debug",
+            "description": "Debug build",
+            "inherits": "base",
+            "hidden": false,
+            "configurePreset": "debug"
+        },
+        {
+            "name": "release",
+            "description": "Release build",
+            "inherits": "base",
+            "hidden": false,
+            "configurePreset": "release"
+        },
+        {
+            "name": "coverage-clang",
+            "description": "Coverage build with clang",
+            "inherits": "base",
+            "hidden": false,
+            "configurePreset": "coverage-clang"
+        },
+        {
+            "name": "coverage-gcc",
+            "description": "Coverage build with gcc",
+            "inherits": "base",
+            "hidden": false,
+            "configurePreset": "coverage-gcc"
+        },
+        {
+            "name": "mm-clang",
+            "description": "Maintainer mode build with clang",
+            "inherits": "base",
+            "hidden": false,
+            "configurePreset": "mm-clang"
+        },
+        {
+            "name": "mm-gcc",
+            "description": "Maintainer mode build with gcc",
+            "inherits": "base",
+            "hidden": false,
+            "configurePreset": "mm-gcc"
+        },
+        {
+            "name": "debug-vcpkg",
+            "description": "Debug + vcpkg",
+            "inherits": "base",
+            "hidden": false,
+            "configurePreset": "debug-vcpkg"
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "base",
+            "hidden": true,
+            "output": {
+                "outputOnFailure": true,
+                "quiet": false
+            }
+        },
+        {
+            "name": "default",
+            "description": "Default build",
+            "inherits": "base",
+            "hidden": false,
+            "configurePreset": "default"
+        },
+        {
+            "name": "debug",
+            "description": "Debug build",
+            "inherits": "base",
+            "hidden": false,
+            "configurePreset": "debug"
+        },
+        {
+            "name": "release",
+            "description": "Release build",
+            "inherits": "base",
+            "hidden": false,
+            "configurePreset": "release"
+        },
+        {
+            "name": "coverage-clang",
+            "description": "Coverage build with clang",
+            "inherits": "base",
+            "hidden": false,
+            "configurePreset": "coverage-clang"
+        },
+        {
+            "name": "coverage-gcc",
+            "description": "Coverage build with gcc",
+            "inherits": "base",
+            "hidden": false,
+            "configurePreset": "coverage-gcc"
+        },
+        {
+            "name": "mm-clang",
+            "description": "Maintainer mode build with clang",
+            "inherits": "base",
+            "hidden": false,
+            "configurePreset": "mm-clang"
+        },
+        {
+            "name": "mm-gcc",
+            "description": "Maintainer mode build with gcc",
+            "inherits": "base",
+            "hidden": false,
+            "configurePreset": "mm-gcc"
+        },
+        {
+            "name": "debug-vcpkg",
+            "description": "Debug + vcpkg",
+            "inherits": "base",
+            "hidden": false,
+            "configurePreset": "debug-vcpkg"
+        }
+    ]
+}

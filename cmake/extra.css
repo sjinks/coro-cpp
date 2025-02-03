@@ -1,0 +1,2 @@
+kbd, code, tt { vertical-align: middle; }
+tbody, .params .paramname, .retval .paramname, .tparams .paramname, .exception .paramname { vertical-align: middle; padding-inline-end: .2em; }

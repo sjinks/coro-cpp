@@ -1,0 +1,7 @@
+---
+InheritParentConfig: true
+Checks: >
+    -readability-function-cognitive-complexity,
+    -readability-magic-numbers,
+    -bugprone-exception-escape
+
