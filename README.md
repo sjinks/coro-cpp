@@ -1,5 +1,8 @@
 # WWA Coro — Yet Another C++20 Coroutine Library
 
+[![Build and Test](https://github.com/sjinks/coro-cpp/actions/workflows/ci.yml/badge.svg)](https://github.com/sjinks/coro-cpp/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/sjinks/coro-cpp/actions/workflows/codeql.yml/badge.svg)](https://github.com/sjinks/coro-cpp/actions/workflows/codeql.yml)
+
 This project provides a set of coroutine-based asynchronous utilities and generators for C++20. It includes synchronous and asynchronous generators, tasks, and various utilities to facilitate coroutine-based programming.
 
 ## Features
@@ -79,6 +82,8 @@ Run `coro_test --help` for the list of available options.
 
 ## Usage Examples
 
+The documentation is available at [https://sjinks.github.io/coro-cpp/](https://sjinks.github.io/coro-cpp/).
+
 ### Eager Coroutine (`eager_task`)
 
 An *eager coroutine* start execution immediately upon creation and does not suspend upon completion. From the caller's perspective,
@@ -93,7 +98,7 @@ wwa::coro::eager_task my_task()
 }
 ```
 
-See [examples/eager_task.cpp](examples/eager_task.cpp)
+See [examples/eager_task.cpp](https://github.com/sjinks/coro-cpp/blob/master/examples/eager_task.cpp)
 
 Eager coroutines can `co_await` other coroutines but they cannot be `co_await`'ed.
 
@@ -138,7 +143,7 @@ It is possible to turn any task (or any awaitable) into a fire-anf-forget eager 
 wwa::coro::run_awaitable(print);
 ```
 
-See [examples/task.cpp](examples/task.cpp).
+See [examples/task.cpp](https://github.com/sjinks/coro-cpp/blob/master/examples/task.cpp).
 
 ### Generators (`generator<T>`)
 
@@ -181,7 +186,7 @@ for (auto n : fibonacci(10)) {
 }
 ```
 
-See [examples/generator.cpp](examples/generator.cpp).
+See [examples/generator.cpp](https://github.com/sjinks/coro-cpp/blob/master/examples/generator.cpp).
 
 ### Asynchronous Generators (`async_generator<T>`)
 
@@ -217,7 +222,7 @@ while (it != end) {
 }
 ```
 
-See [examples/async_generator.cpp](examples/async_generator.cpp).
+See [examples/async_generator.cpp](https://github.com/sjinks/coro-cpp/blob/master/examples/async_generator.cpp).
 
 Unfortunately, it is impossible to use asynchronous iterators directly in range-based `for` loops.
 However, this limitation can be overcome with the help of eager coroutines.
@@ -244,4 +249,4 @@ for (auto& n : sync_iota | std::views::take(5)) {
 }
 ```
 
-See [examples/sync_generator_adapter.cpp](examples/sync_generator_adapter.cpp).
+See [examples/sync_generator_adapter.cpp](https://github.com/sjinks/coro-cpp/blob/master/examples/sync_generator_adapter.cpp).
