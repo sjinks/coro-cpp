@@ -17,8 +17,8 @@ using namespace wwa::coro;
 namespace {
 
 template<typename T>
-task<T>
-value(T what)  // NOLINT(performance-unnecessary-value-param,cppcoreguidelines-avoid-reference-coroutine-parameters)
+// NOLINTNEXTLINE(performance-unnecessary-value-param,cppcoreguidelines-avoid-reference-coroutine-parameters)
+task<T> value(T what)
 {
     if constexpr (std::is_rvalue_reference_v<T>) {
         co_return std::move(what);
@@ -272,24 +272,22 @@ TEST(TaskTest, DeeplyNestedTask)
     int sum = 0;
 
     const auto task1 = [](std::reference_wrapper<int> sum1) -> task<> {
-        constexpr int expected_task2 = 1983;
-
-        const auto task2 = [](std::reference_wrapper<int> sum2) -> task<int> {
-            constexpr int expected_task3 = 24;
-
-            const auto task3 = [](std::reference_wrapper<int> sum3) -> task<int> {
-                sum3.get() += expected_task3;
-                co_return expected_task3;
+        const auto task2 = [](std::reference_wrapper<int> sum2, int term2) -> task<int> {
+            const auto task3 = [](std::reference_wrapper<int> sum3, int term3) -> task<int> {
+                sum3.get() += term3;
+                co_return term3;
             };
 
-            const auto actual = co_await task3(sum2);
+            constexpr int expected_task3 = 24;
+            const auto actual            = co_await task3(sum2, expected_task3);
             EXPECT_EQ(actual, expected_task3);
 
-            sum2.get() += expected_task2;
-            co_return expected_task2;
+            sum2.get() += term2;
+            co_return term2;
         };
 
-        const auto actual = co_await task2(sum1);
+        constexpr int expected_task2 = 1983;
+        const auto actual            = co_await task2(sum1, expected_task2);
         EXPECT_EQ(actual, expected_task2);
     };
 
@@ -306,24 +304,22 @@ TEST(TaskTest, DeeplyNestedTaskAlt)
         int sum = 0;
 
         const auto task1 = [](std::reference_wrapper<int> sum1) -> task<int> {
-            constexpr int expected_task2 = 1983;
-
-            const auto task2 = [](std::reference_wrapper<int> sum2) -> task<int> {
-                constexpr int expected_task3 = 24;
-
-                const auto task3 = [](std::reference_wrapper<int> sum3) -> task<int> {
-                    sum3.get() += expected_task3;
-                    co_return expected_task3;
+            const auto task2 = [](std::reference_wrapper<int> sum2, int term2) -> task<int> {
+                const auto task3 = [](std::reference_wrapper<int> sum3, int term3) -> task<int> {
+                    sum3.get() += term3;
+                    co_return term3;
                 };
 
-                const auto actual = co_await task3(sum2);
+                constexpr int expected_task3 = 24;
+                const auto actual            = co_await task3(sum2, expected_task3);
                 EXPECT_EQ(actual, expected_task3);
 
-                sum2.get() += expected_task2;
-                co_return expected_task2;
+                sum2.get() += term2;
+                co_return term2;
             };
 
-            const auto actual = co_await task2(sum1);
+            constexpr int expected_task2 = 1983;
+            const auto actual            = co_await task2(sum1, expected_task2);
             EXPECT_EQ(actual, expected_task2);
 
             co_return sum1;

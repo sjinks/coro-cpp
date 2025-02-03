@@ -9,7 +9,7 @@ set(CTEST_MEMORYCHECK_TYPE "Valgrind")
 ctest_start(Experimental)
 if(CTEST_MEMORYCHECK_COMMAND)
     # Need -O1 becuase valgrind is too slow
-    set(options -DCMAKE_CXX_COMPILER=clang++;-DCMAKE_CXX_FLAGS=-O1)
+    set(options -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_CXX_FLAGS=-O1 -DBUILD_DOCS=OFF -DBUILD_EXAMPLES=OFF)
     ctest_configure(OPTIONS "${options}")
     ctest_build()
     ctest_memcheck(
