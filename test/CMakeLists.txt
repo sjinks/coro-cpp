@@ -1,4 +1,3 @@
-include(CTest)
 include(GoogleTest)
 
 if(ENABLE_MAINTAINER_MODE)
@@ -9,7 +8,6 @@ endif()
 
 set_directory_properties(PROPERTIES INCLUDE_DIRECTORIES "${CMAKE_SOURCE_DIR}/src")
 
-enable_testing()
 add_executable(
     coro_test
     async_generator.cpp

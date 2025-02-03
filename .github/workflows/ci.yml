@@ -1,0 +1,97 @@
+name: Build and Test
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    name: Prepare list of configurations
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      presets: ${{ steps.set-matrix.outputs.presets }}
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@cb605e52c26070c328afc4562f0b4ada7618a84e # v2.10.4
+        with:
+          disable-sudo: true
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+
+      - name: Check out the source code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Set matrix
+        id: set-matrix
+        run: echo presets="$(jq '.configurePresets[] | select(.hidden == false) | {name, description}' CMakePresets.json | jq --slurp -c .)" >> "${GITHUB_OUTPUT}"
+
+  build:
+    needs: prepare
+    name: Build and Test (${{ matrix.preset.description }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        preset: ${{ fromJson(needs.prepare.outputs.presets) }}
+    permissions:
+      contents: read
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@cb605e52c26070c328afc4562f0b4ada7618a84e # v2.10.4
+        with:
+          egress-policy: block
+          allowed-endpoints: >
+            api.github.com:443
+            azure.archive.ubuntu.com:80
+            esm.ubuntu.com:443
+            github.com:443
+            motd.ubuntu.com:443
+            objects.githubusercontent.com:443
+            packages.microsoft.com:443
+
+      - name: Check out code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - name: Install dependencies
+        uses: ./.github/actions/install-dependencies
+
+      - name: Build and test
+        run: |
+          cmake --preset ${{ matrix.preset.name }} -DBUILD_DOCS=OFF
+          cmake --build --preset ${{ matrix.preset.name }} -j $(nproc)
+          ctest --preset ${{ matrix.preset.name }}
+
+  build-ext:
+    name: Build and Test (external dependencies)
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@cb605e52c26070c328afc4562f0b4ada7618a84e # v2.10.4
+        with:
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+
+      - name: Check out code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Build and test
+        run: |
+          cmake --preset default -DBUILD_DOCS=OFF
+          cmake --build --preset default -j $(nproc)
+          ctest --preset default
+          sudo cmake --install build

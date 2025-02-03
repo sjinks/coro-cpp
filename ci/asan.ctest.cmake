@@ -4,7 +4,7 @@ set(CTEST_CONFIGURATION_TYPE "ASAN")
 set(CTEST_MEMORYCHECK_TYPE "AddressSanitizer")
 
 ctest_start(Experimental)
-set(options -DCMAKE_CXX_COMPILER=clang++)
+set(options -DCMAKE_CXX_COMPILER=clang++ -DBUILD_DOCS=OFF -DBUILD_EXAMPLES=OFF)
 ctest_configure(OPTIONS "${options}")
 ctest_build()
 ctest_memcheck(

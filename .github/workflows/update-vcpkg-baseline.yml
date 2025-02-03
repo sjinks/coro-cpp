@@ -1,0 +1,52 @@
+name: Update vcpkg baseline
+
+on:
+  push:
+    paths:
+      - 'vcpkg/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  update-baseline:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@cb605e52c26070c328afc4562f0b4ada7618a84e # v2.10.4
+        with:
+          egress-policy: audit
+
+      - name: Check out code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          submodules: true
+
+      - name: Get latest vcpkg baseline
+        id: vcpkg-baseline
+        run: |
+          BASELINE="$(git submodule status vcpkg | awk '{print $1}')"
+          echo "baseline=${BASELINE}" >> ${GITHUB_OUTPUT}
+
+      - name: Update vcpkg-configuration.json
+        run: |
+          jq --arg baseline "${{ steps.vcpkg-baseline.outputs.baseline }}" '.["default-registry"].baseline = $baseline' vcpkg-configuration.json > tmp.$$.json && mv tmp.$$.json vcpkg-configuration.json
+          if ! git diff --quiet vcpkg-configuration.json; then
+            echo "KEEP_GOING=yes" >> "${GITHUB_ENV}"
+          fi
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@67ccf781d68cd99b580ae25a5c18a1cc84ffff1f # v7.0.6
+        with:
+          commit-message: "chore(deps): update default registry's baseline to `${{ steps.vcpkg-baseline.outputs.baseline }}`"
+          title: "chore(deps): update default registry's baseline to `${{ steps.vcpkg-baseline.outputs.baseline }}`"
+          body: |
+            This PR updates default registry's baseline to `${{ steps.vcpkg-baseline.outputs.baseline }}`.
+          branch: "update-vcpkg-baseline-${{ steps.vcpkg-baseline.outputs.baseline }}"
+          labels: dependencies
+          token: ${{ secrets.REPOSITORY_ACCESS_TOKEN }}
+        if: env.KEEP_GOING == 'yes'

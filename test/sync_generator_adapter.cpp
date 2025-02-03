@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 
+#include <array>
 #include <numeric>
+
 #include "async_generator.h"
 #include "sync_generator_adapter.h"
 #include "task.h"
@@ -85,7 +87,7 @@ TEST(SyncGeneratorAdapterTest, Fibonacci)
     using value_type           = unsigned int;
     constexpr value_type limit = 10;
 
-    constexpr std::array<value_type, limit> expected{0, 1, 1, 2, 3, 5, 8, 13, 21, 34};
+    const std::array<value_type, limit> expected{0, 1, 1, 2, 3, 5, 8, 13, 21, 34};
     std::array<value_type, expected.size()> actual{};
 
     sync_generator_adapter<value_type> gen(async_fibonacci<value_type>(expected.size()));

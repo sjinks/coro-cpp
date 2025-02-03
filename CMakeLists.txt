@@ -110,8 +110,16 @@ if(USE_CLANG_TIDY)
 endif()
 
 add_subdirectory(src)
-add_subdirectory(test)
-add_subdirectory(examples)
+
+if(BUILD_TESTS)
+    include(CTest)
+    enable_testing()
+    add_subdirectory(test)
+endif()
+
+if(BUILD_EXAMPLES)
+    add_subdirectory(examples)
+endif()
 
 find_program(CLANG_FORMAT NAMES clang-format)
 find_program(CLANG_TIDY NAMES clang-tidy)
