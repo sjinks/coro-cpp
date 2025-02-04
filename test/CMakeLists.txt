@@ -84,6 +84,7 @@ if(ENABLE_COVERAGE)
                 --print-summary
                 --txt "${PROJECT_BINARY_DIR}/coverage/coverage.txt"
                 --lcov "${PROJECT_BINARY_DIR}/coverage/coverage.lcov"
+                --sonarqube "${PROJECT_BINARY_DIR}/coverage/coverage.xml"
         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
         COMMENT "Generating coverage report"
     )

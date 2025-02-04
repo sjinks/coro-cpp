@@ -48,11 +48,16 @@ jobs:
         uses: ./.github/actions/install-dependencies
 
       - name: Generate compilation database
-        run: cmake -B build
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Coverage -DCMAKE_CXX_COMPILER=clang++
+
+      - name: Generate coverage report
+        run: cmake --build build --target coverage -j $(nproc)
 
       - name: Run sonar-scanner
         uses: SonarSource/sonarqube-scan-action@bfd4e558cda28cda6b5defafb9232d191be8c203 # v4.2.1
         with:
-          args: --define sonar.cfamily.compile-commands=build/compile_commands.json
+          args: >
+            --define sonar.cfamily.compile-commands=build/compile_commands.json
+            --define sonar.coverageReportPaths=build/coverage/coverage.xml
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
