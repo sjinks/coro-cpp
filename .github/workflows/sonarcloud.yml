@@ -24,20 +24,20 @@ jobs:
       - name: Harden Runner
         uses: step-security/harden-runner@cb605e52c26070c328afc4562f0b4ada7618a84e # v2.10.4
         with:
-          egress-policy: block
-          allowed-endpoints:
-            analysis-sensorcache-eu-central-1-prod.s3.amazonaws.com:443
-            api.github.com:443
-            api.nuget.org:443
-            api.sonarcloud.io:443
-            azure.archive.ubuntu.com:80
-            binaries.sonarsource.com:443
-            esm.ubuntu.com:443
-            github.com:443
-            motd.ubuntu.com:443
-            packages.microsoft.com:443
-            scanner.sonarcloud.io:443
-            sonarcloud.io:443
+          egress-policy: audit
+          # allowed-endpoints:
+          #   analysis-sensorcache-eu-central-1-prod.s3.amazonaws.com:443
+          #   api.github.com:443
+          #   api.nuget.org:443
+          #   api.sonarcloud.io:443
+          #   azure.archive.ubuntu.com:80
+          #   binaries.sonarsource.com:443
+          #   esm.ubuntu.com:443
+          #   github.com:443
+          #   motd.ubuntu.com:443
+          #   packages.microsoft.com:443
+          #   scanner.sonarcloud.io:443
+          #   sonarcloud.io:443
 
       - name: Check out code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -61,3 +61,9 @@ jobs:
             --define sonar.coverageReportPaths=build/coverage/coverage.xml
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@5ecb98a3c6b747ed38dc09f787459979aebb39be # v4.3.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: build/coverage/coverage.lcov
