@@ -176,30 +176,6 @@ struct promise_type<void> : promise_base<promise_type<void>> {
     void result_value() const { this->rethrow_if_exception(); }
 };
 
-template<typename Promise>
-class awaiter_base {
-public:
-    awaiter_base(std::coroutine_handle<Promise> coro) noexcept : m_coroutine(coro) {}
-
-    [[nodiscard]] constexpr bool await_ready() const noexcept { return detail::is_ready(this->m_coroutine); }
-
-    auto await_suspend(std::coroutine_handle<> awaiting) noexcept
-    {
-        this->m_coroutine.promise().set_next(awaiting);
-        return this->m_coroutine;
-    }
-
-protected:
-    auto coroutine()
-    {
-        detail::check_coroutine(this->m_coroutine);
-        return this->m_coroutine;
-    }
-
-private:
-    std::coroutine_handle<Promise> m_coroutine;
-};
-
 }  // namespace detail
 
 /// @endcond
@@ -428,10 +404,19 @@ public:
      */
     auto operator co_await() const& noexcept
     {
-        struct awaiter : public detail::awaiter_base<promise_type> {
+        struct awaiter {
+            [[nodiscard]] constexpr bool await_ready() const noexcept { return detail::is_ready(this->coroutine); }
+
+            auto await_suspend(std::coroutine_handle<> awaiting) noexcept
+            {
+                this->coroutine.promise().set_next(awaiting);
+                return this->coroutine;
+            }
+
             decltype(auto) await_resume()
             {
-                auto& promise = this->coroutine().promise();
+                detail::check_coroutine(this->coroutine);
+                auto& promise = this->coroutine.promise();
                 if constexpr (std::is_rvalue_reference_v<Result>) {
                     return std::move(promise.result_value());
                 }
@@ -439,9 +424,12 @@ public:
                     return promise.result_value();
                 }
             }
+
+            // NOLINTNEXTLINE(misc-non-private-member-variables-in-classes)
+            std::coroutine_handle<promise_type> coroutine;
         };
 
-        return awaiter(this->m_coroutine);
+        return awaiter{this->m_coroutine};
     }
 
     /**
@@ -457,15 +445,26 @@ public:
     auto operator co_await() && noexcept
     requires(!std::is_void_v<Result>)
     {
-        struct awaiter : public detail::awaiter_base<promise_type> {
+        struct awaiter {
+            [[nodiscard]] constexpr bool await_ready() const noexcept { return detail::is_ready(this->coroutine); }
+
+            auto await_suspend(std::coroutine_handle<> awaiting) noexcept
+            {
+                this->coroutine.promise().set_next(awaiting);
+                return this->coroutine;
+            }
+
             decltype(auto) await_resume()
             {
-                auto coro = this->coroutine();
-                return std::move(coro.promise().result_value());
+                detail::check_coroutine(this->coroutine);
+                return std::move(this->coroutine.promise().result_value());
             }
+
+            // NOLINTNEXTLINE(misc-non-private-member-variables-in-classes)
+            std::coroutine_handle<promise_type> coroutine;
         };
 
-        return awaiter(this->m_coroutine);
+        return awaiter{this->m_coroutine};
     }
 
 private:
