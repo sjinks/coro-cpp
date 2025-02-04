@@ -17,7 +17,7 @@
 /// @cond INTERNAL
 
 // NOLINTNEXTLINE(modernize-concat-nested-namespaces)
-namespace wwa::coro {
+namespace wwa::coro {  // NOSONAR
 
 /**
  * @brief Internal utility functions for coroutine handling.

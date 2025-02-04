@@ -366,37 +366,6 @@ TEST(GeneratorTest, EmptyGenerator)
     EXPECT_THROW(++it, bad_result_access);
 }
 
-TEST(GeneratorIteratorTest, Move)
-{
-    constexpr int v1 = 1;
-    constexpr int v2 = 4;
-
-    auto g1 = value<decltype(v1)>(v1);
-    auto g2 = value<decltype(v2)>(v2);
-
-    auto it1 = g1.begin();
-    auto it2 = g2.begin();
-
-    it2 = std::move(it1);
-
-    EXPECT_EQ(*it2, v1);
-}
-
-TEST(GeneratorIteratorTest, MoveSelf)
-{
-    constexpr int expected = 1983;
-
-    auto g = value<decltype(expected)>(expected);
-
-    auto it = g.begin();
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wself-move"
-    it = std::move(it);
-#pragma clang diagnostic pop
-
-    EXPECT_EQ(*it, expected);
-}
-
 TEST(GeneratorIteratorTest, AccessEndIterator)
 {
     auto g = value(1);

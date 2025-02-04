@@ -130,7 +130,7 @@ public:
          *
          * This method is called when the coroutine returns. Does nothing.
          */
-        constexpr void return_void() noexcept {}
+        constexpr void return_void() const noexcept {}
 
         /**
          * @brief Yields a value from the generator.
@@ -234,7 +234,7 @@ public:
              * @brief Constructs a new yield operation.
              * @param consumer The consumer coroutine.
              */
-            constexpr yield_op(std::coroutine_handle<> consumer) noexcept : m_consumer(consumer) {}
+            constexpr explicit yield_op(std::coroutine_handle<> consumer) noexcept : m_consumer(consumer) {}
 
             /**
              * @brief Determines whether the coroutine should suspend or continue immediately.
