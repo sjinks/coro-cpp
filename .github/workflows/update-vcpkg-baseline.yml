@@ -3,7 +3,7 @@ name: Update vcpkg baseline
 on:
   push:
     paths:
-      - 'vcpkg/**'
+      - 'vcpkg'
   workflow_dispatch:
 
 permissions:
