@@ -61,7 +61,7 @@ public:
          * @internal
          * @test @a SimpleTaskDeathTest.UnhandledException ensures that the program terminates on an unhandled exception.
          */
-        [[noreturn]] void unhandled_exception() noexcept { std::terminate(); }
+        [[noreturn]] void unhandled_exception() const noexcept { std::terminate(); }
 
         /**
          * @brief Handles the exit out of the coroutine body.
@@ -85,7 +85,7 @@ public:
          * @internal
          * @test @a SimpleTaskTest.Basic
          */
-        constexpr auto initial_suspend() noexcept { return std::suspend_never{}; }
+        [[nodiscard]] constexpr auto initial_suspend() const noexcept { return std::suspend_never{}; }
 
         /**
          * @brief Issues an awaiter for final suspend point.
@@ -99,7 +99,7 @@ public:
          * @internal
          * @test @a SimpleTaskTest.Basic
          */
-        constexpr auto final_suspend() noexcept { return std::suspend_never{}; }
+        [[nodiscard]] constexpr auto final_suspend() const noexcept { return std::suspend_never{}; }
 
         /// @endcond
     };

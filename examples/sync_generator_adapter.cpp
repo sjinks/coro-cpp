@@ -20,9 +20,9 @@ wwa::coro::async_generator<int> async_iota(int start = 0)
 int main()
 {
     //! [usage]
-    wwa::coro::sync_generator_adapter<int> sync_iota(async_iota(10));
+    wwa::coro::sync_generator_adapter sync_iota(async_iota(10));
 
-    for (auto& n : sync_iota | std::views::take(5)) {
+    for (const auto& n : sync_iota | std::views::take(5)) {
         std::cout << n << "\n";
     }
     //! [usage]
