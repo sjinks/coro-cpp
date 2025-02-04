@@ -2,6 +2,7 @@
 
 [![Build and Test](https://github.com/sjinks/coro-cpp/actions/workflows/ci.yml/badge.svg)](https://github.com/sjinks/coro-cpp/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/sjinks/coro-cpp/actions/workflows/codeql.yml/badge.svg)](https://github.com/sjinks/coro-cpp/actions/workflows/codeql.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=sjinks_coro-cpp&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=sjinks_coro-cpp)
 
 This project provides a set of coroutine-based asynchronous utilities and generators for C++20. It includes synchronous and asynchronous generators, tasks, and various utilities to facilitate coroutine-based programming.
 
