@@ -75,7 +75,14 @@ if(ENABLE_COVERAGE)
         COMMAND ${CMAKE_COMMAND} -E rm -rf "${PROJECT_BINARY_DIR}/coverage"
         COMMAND ${CMAKE_COMMAND} -E make_directory "${PROJECT_BINARY_DIR}/coverage"
         COMMAND
-            gcovr -f "${PROJECT_SOURCE_DIR}/src/" -f "${PROJECT_SOURCE_DIR}/examples/" -r "${PROJECT_SOURCE_DIR}"
+            gcovr -f "${PROJECT_SOURCE_DIR}/examples/" -r "${PROJECT_SOURCE_DIR}"
+                --exclude-noncode-lines --exclude-throw-branches --exclude-unreachable-branches --decisions
+                --gcov-executable="${GCOV_TOOL}"
+                --gcov-exclude-directories "${PROJECT_SOURCE_DIR}/vcpkg"
+                --gcov-delete
+                --sonarqube "${PROJECT_BINARY_DIR}/coverage/coverage-examples.xml"
+        COMMAND
+            gcovr -f "${PROJECT_SOURCE_DIR}/src/" -r "${PROJECT_SOURCE_DIR}"
                 --html-details -o "${PROJECT_BINARY_DIR}/coverage/index.html"
                 --exclude-noncode-lines --exclude-throw-branches --exclude-unreachable-branches --decisions
                 --gcov-executable="${GCOV_TOOL}"
