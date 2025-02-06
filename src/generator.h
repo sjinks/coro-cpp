@@ -446,27 +446,6 @@ public:
      */
     [[nodiscard]] constexpr iterator end() const noexcept { return iterator(nullptr); }
 
-    /**
-     * @brief Returns a constant iterator to the **current** item of the generator.
-     *
-     * Alias for `begin() const`.
-     *
-     * @return Constant iterator.
-     * @overload
-     */
-    [[nodiscard]] iterator cbegin() const { return this->begin(); }
-
-    /**
-     * @brief Returns a cinstant sentinel iterator.
-     *
-     * Alias for `end() const`.
-     *
-     * @return Constant sentinel iterator.
-     * @internal
-     * @test @a GeneratorTest.SumIterator
-     */
-    [[nodiscard]] iterator cend() const noexcept { return this->end(); }
-
 private:
     /** @brief Coroutine handle. */
     std::coroutine_handle<promise_type> m_coroutine;

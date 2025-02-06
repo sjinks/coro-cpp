@@ -45,7 +45,7 @@ generator<T> first_n(T n)
 {
     T v{0};
     while (v < n) {
-        co_yield v++;
+        co_yield v++;  // NOSONAR
     }
 }
 
@@ -54,7 +54,7 @@ requires(std::is_arithmetic_v<T>)
 generator<T> iota(T n = T{0})
 {
     while (true) {
-        co_yield n++;
+        co_yield n++;  // NOSONAR
     }
 }
 
@@ -67,25 +67,25 @@ generator<T> value(T v)
 /**
  * The original version was buggy because it did not handle the case where the last line did not end with a newline.
  */
-generator<std::vector<std::string>> split_by_lines_and_whitespace(std::string_view sv)
+generator<std::vector<std::string>> split_by_lines_and_whitespace(std::string s)
 {
     std::vector<std::string> res;
     std::string_view::size_type start     = 0;
-    const std::string_view::size_type end = sv.size();
+    const std::string_view::size_type end = s.size();
 
     while (start < end) {
-        auto pos = sv.find_first_of(" \n", start);
+        auto pos = s.find_first_of(" \n", start);
 
         if (pos != std::string_view::npos) {
-            res.emplace_back(sv.substr(start, pos - start));
+            res.emplace_back(s.substr(start, pos - start));
             start = pos + 1;
         }
         else {
-            res.emplace_back(sv.substr(start));
+            res.emplace_back(s.substr(start));
             start = end;
         }
 
-        if (pos == std::string_view::npos || sv[pos] == '\n') {
+        if (pos == std::string_view::npos || s[pos] == '\n') {
             co_yield res;
             res.clear();
         }
@@ -107,6 +107,10 @@ generator<std::pair<std::size_t, std::ranges::range_reference_t<Range>>> enumera
         ++i;
     }
 }
+
+class test_error : public std::runtime_error {
+    using std::runtime_error::runtime_error;
+};
 
 }  // namespace
 
@@ -135,23 +139,6 @@ TEST(GeneratorTest, Sum)
 
     constexpr value_type expected = 55U;
     const value_type actual       = std::accumulate(generator.begin(), generator.end(), 0U);
-
-    EXPECT_EQ(actual, expected);
-}
-
-TEST(GeneratorTest, SumIterator)
-{
-    using value_type           = unsigned int;
-    constexpr value_type count = 10U;
-
-    auto&& generator = first_n(count + 1);
-
-    constexpr value_type expected = 55U;
-    value_type actual             = 0U;
-    // NOLINTNEXTLINE(modernize-loop-convert) -- we want to test cbegin()/cend()
-    for (auto it = generator.cbegin(); it != generator.cend(); ++it) {
-        actual += *it;
-    }
 
     EXPECT_EQ(actual, expected);
 }
@@ -188,7 +175,8 @@ TEST(GeneratorTest, MoveConstruct)
 {
     auto nat = [](std::size_t n) -> generator<std::size_t> {
         while (true) {
-            co_yield ++n;
+            ++n;
+            co_yield n;
         }
     }(0);
 
@@ -249,7 +237,7 @@ TEST(GeneratorTest, MoveAssignSelf)
     g = std::move(g);
 #pragma clang diagnostic pop
 
-    EXPECT_EQ(*g.cbegin(), 1);
+    EXPECT_EQ(*g.begin(), 1);
 }
 
 TEST(GeneratorTest, View)
@@ -267,7 +255,7 @@ TEST(GeneratorTest, View)
 
     value_type actual_count = 0U;
     value_type actual_sum   = 0U;
-    for (auto&& n : iota<value_type>(1) | std::views::take(5)) {
+    for (const auto& n : iota<value_type>(1) | std::views::take(5)) {
         ++actual_count;
         actual_sum += n;
     }
@@ -279,26 +267,26 @@ TEST(GeneratorTest, View)
 TEST(GeneratorTest, ExceptionBeforeYield)
 {
     auto gen = []() -> generator<int> {
-        throw std::runtime_error("Goodbye");
+        throw test_error("Goodbye");
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunreachable-code"
         co_yield 1;
 #pragma clang diagnostic pop
     }();
 
-    EXPECT_THROW(static_cast<void>(gen.begin()), std::runtime_error);
+    EXPECT_THROW(static_cast<void>(gen.begin()), test_error);
 }
 
 TEST(GeneratorTest, ExceptionAfterYield)
 {
     auto gen = []() -> generator<int> {
         co_yield 1;
-        throw std::runtime_error("Goodbye");
+        throw test_error("Goodbye");
     }();
 
     auto it = gen.begin();
     EXPECT_EQ(*it, 1);
-    EXPECT_THROW(++it, std::runtime_error);
+    EXPECT_THROW(++it, test_error);
     EXPECT_EQ(it, gen.end());
 }
 
@@ -309,7 +297,7 @@ TEST(GeneratorTest, IteratorUB)
     // Two begin() calls, therefore, will get the second value of the sequence
     // Because the value is shared among all iterators, *it1 == *it2
     auto it1         = generator.begin();
-    auto it2         = generator.cbegin();
+    auto it2         = generator.begin();
 
     EXPECT_EQ(*it1, 2);
     EXPECT_EQ(*it2, 2);
@@ -375,7 +363,6 @@ TEST(GeneratorIteratorTest, AccessEndIterator)
     ++it;
 
     EXPECT_EQ(it, g.end());
-    EXPECT_EQ(it, g.cend());
 
     EXPECT_THROW(*it, bad_result_access);
     EXPECT_THROW(*g.end(), bad_result_access);
@@ -483,7 +470,7 @@ TEST(TLGeneratorTest, split)
     auto&& gen = split_by_lines_and_whitespace(input);
 
     std::size_t cnt = 0;
-    for (auto&& [i, val] : enumerate(gen)) {
+    for (const auto& [i, val] : enumerate(gen)) {
         EXPECT_EQ(val, expected.at(i));
         ++cnt;
     }
