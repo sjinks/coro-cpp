@@ -29,3 +29,20 @@ target_compile_features(advance_with_begin PRIVATE cxx_std_20)
 
 add_executable(task task.cpp)
 target_compile_features(task PRIVATE cxx_std_20)
+
+if(TARGET generate_coverage)
+    add_custom_target(
+        run_examples
+        COMMAND eager_task
+        COMMAND run_awaitable
+        COMMAND sync_generator_adapter
+        COMMAND async_generator
+        COMMAND generator
+        COMMAND generator_iterator
+        COMMAND advance_with_begin
+        COMMAND task
+        DEPENDS eager_task run_awaitable sync_generator_adapter async_generator generator generator_iterator advance_with_begin task
+    )
+
+    add_dependencies(generate_coverage run_examples)
+endif()
