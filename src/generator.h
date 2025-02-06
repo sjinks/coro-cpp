@@ -203,23 +203,10 @@ public:
      * The iterator is used to traverse the values produced by the generator.
      *
      * Example (range-based `for`):
-     * ```
-     * // gen is an instance of sync_generator
-     * for (auto value : gen) {
-     *     std::cout << *it << " ";
-     *     ++it;
-     * }
-     * ```
+     * @snippet{trimleft} generator_iterator.cpp range-for example
      *
      * Example (manual iteration):
-     * ```
-     * // gen is an instance of sync_generator
-     * auto it = gen.begin();
-     * while (it != gen.end()) {
-     *     std::cout << *it << " ";
-     *     ++it;
-     * }
-     * ```
+     * @snippet{trimleft} generator_iterator.cpp manual iteration example
      */
     class iterator {
     public:
@@ -481,6 +468,11 @@ private:
 /**
  * @example generator.cpp
  * Example of using a generator to generate Fibonacci numbers.
+ */
+
+/**
+ * @example generator_iterator.cpp
+ * Example of using generator iterators with range `for` and mnaually.
  */
 
 /**
