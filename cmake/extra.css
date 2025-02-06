@@ -1,2 +1,2 @@
 kbd, code, tt { vertical-align: baseline; }
-tbody, .params .paramname, .retval .paramname, .tparams .paramname, .exception .paramname { vertical-align: middle; padding-inline-end: .2em; }
+tbody, .params .paramname, .retval .paramname, .tparams .paramname, .exception .paramname { vertical-align: baseline; padding-inline-end: .2em; }
