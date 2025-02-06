@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <array>
+#include <cstddef>
 #include <iterator>
 #include <numeric>
 #include <ranges>
@@ -41,10 +42,10 @@ generator<T> fibonacci(T n)
 
 template<typename T>
 requires(std::is_arithmetic_v<T>)
-generator<T> first_n(T n)
+generator<T> first_n(std::size_t n)
 {
     T v{0};
-    while (v < n) {
+    while (static_cast<std::size_t>(v) < n) {
         co_yield v++;  // NOSONAR
     }
 }
@@ -148,7 +149,7 @@ TEST(GeneratorTest, AdvanceWithBegin)
     using value_type           = unsigned int;
     constexpr value_type count = 5U;
 
-    auto&& generator = first_n(count);
+    auto&& generator = first_n<value_type>(count);
     auto it          = generator.begin();
     value_type idx   = 0;
     while (it != generator.end()) {
@@ -162,7 +163,7 @@ TEST(GeneratorTest, AdvanceWithBegin)
 
 TEST(GeneratorTest, AllThingsEnd)
 {
-    const auto&& generator = first_n(5);
+    const auto&& generator = first_n<int>(5);
     while (generator.begin() != generator.end()) {
         static_cast<void>(generator.begin());
     }

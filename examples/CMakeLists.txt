@@ -21,6 +21,9 @@ target_compile_features(async_generator PRIVATE cxx_std_20)
 add_executable(generator generator.cpp)
 target_compile_features(generator PRIVATE cxx_std_20)
 
+add_executable(generator_iterator generator_iterator.cpp)
+target_compile_features(generator_iterator PRIVATE cxx_std_20)
+
 add_executable(advance_with_begin advance_with_begin.cpp)
 target_compile_features(advance_with_begin PRIVATE cxx_std_20)
 
