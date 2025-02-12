@@ -13,9 +13,6 @@
  * Example usage:
  * @snippet async_generator.cpp asynchronous generator example
  * @snippet{trimleft} async_generator.cpp asynchronous generator usage
- *
- * With the help of `sync_generator_adapter`, you can adapt an asynchronous generator to use it in a synchronous context
- * (e.g., range-based for loops or views).
  */
 
 #include <coroutine>

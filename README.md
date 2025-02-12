@@ -87,8 +87,7 @@ The documentation is available at [https://sjinks.github.io/coro-cpp/](https://s
 
 ### Eager Coroutine (`eager_task`)
 
-An *eager coroutine* start execution immediately upon creation and does not suspend upon completion. From the caller's perspective,
-it runs synchoronously; the control is returned to the caller only after the coroutine finishes.
+An *eager coroutine* (or *hot-start coroutine*) starts execution immediately upon creation and keeps running until the first suspending `co_await`.
 
 ```cpp
 #include <wwa/coro/eager_task.h>
@@ -135,7 +134,7 @@ wwa::coro::task<> print()
 }
 ```
 
-It is possible to turn any task (or any awaitable) into a fire-anf-forget eager coroutine. For the example above,
+It is possible to turn any task (or any awaitable) into a fire-and-forget eager coroutine. For the example above,
 
 ```cpp
 #include <wwa/coro/eager_task.h>
@@ -226,28 +225,3 @@ while (it != end) {
 See [examples/async_generator.cpp](https://github.com/sjinks/coro-cpp/blob/master/examples/async_generator.cpp).
 
 Unfortunately, it is impossible to use asynchronous iterators directly in range-based `for` loops.
-However, this limitation can be overcome with the help of eager coroutines.
-
-There is a helper adapter, `sync_generator_adapter<T>`, that turns an asynchronous generator into a quasi-synchronous one:
-
-```cpp
-#include <wwa/coro/async_generator.h>
-#include <wwa/coro/sync_generator_adapter.h>
-
-wwa::coro::async_generator<int> async_iota(int start = 0)
-{
-    for (int i = start;; ++i) {
-        co_yield i;
-    }
-}
-
-// ...
-
-wwa::coro::sync_generator_adapter<int> sync_iota(async_iota(10));
-
-for (auto& n : sync_iota | std::views::take(5)) {
-    std::cout << n << "\n";
-}
-```
-
-See [examples/sync_generator_adapter.cpp](https://github.com/sjinks/coro-cpp/blob/master/examples/sync_generator_adapter.cpp).

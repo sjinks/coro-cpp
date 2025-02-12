@@ -13,7 +13,6 @@ add_executable(
     async_generator.cpp
     eager_task.cpp
     generator.cpp
-    sync_generator_adapter.cpp
     task.cpp
 )
 target_link_libraries(coro_test PRIVATE GTest::gtest_main)
