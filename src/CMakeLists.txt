@@ -28,7 +28,6 @@ target_sources(
             eager_task.h
             exceptions.h
             generator.h
-            sync_generator_adapter.h
             task.h
 )
 

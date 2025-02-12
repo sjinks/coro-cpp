@@ -22,8 +22,7 @@ namespace wwa::coro {
 /**
  * @brief Eager coroutine.
  *
- * This class represents an eager coroutine, which starts execution immediately upon creation and does not suspend upon completion.
- * From the caller's perspective, it runs synchoronously; the control is returned to the caller only after the coroutine finishes.
+ * This class represents an eager coroutine, which starts execution immediately upon creation and and keeps running until the first suspending `co_await`.
  *
  * Example:
  * @snippet eager_task.cpp eager_task example
@@ -134,7 +133,7 @@ eager_task run_awaitable(Awaitable&& f, Args&&... args)
 
 /**
  * @example run_awaitable.cpp
- * Shows how to use `run_awaitable` to turn any awaitable into an eager coroutine that runs synchronously from the caller's perspective.
+ * Shows how to use `run_awaitable` to turn any awaitable into an eager coroutine.
  */
 
 }  // namespace wwa::coro
