@@ -17,6 +17,7 @@
 
 #include <coroutine>
 #include <exception>
+#include <functional>
 #include <iterator>
 #include <memory>
 #include <type_traits>
@@ -24,6 +25,7 @@
 
 #include "detail.h"
 #include "exceptions.h"
+#include "task.h"
 
 namespace wwa::coro {
 
@@ -600,6 +602,18 @@ private:
         : m_coroutine(std::coroutine_handle<promise_type>::from_promise(promise))
     {}
 };
+
+template<typename AsyncGenerator, typename Callable>
+task<void> async_for_each(AsyncGenerator gen, Callable callable)
+{
+    auto it  = co_await gen.begin();
+    auto end = gen.end();
+
+    while (it != end) {
+        std::invoke(std::forward<Callable>(callable), *it);
+        co_await ++it;
+    }
+}
 
 /**
  * @example async_generator.cpp
