@@ -68,7 +68,7 @@ jobs:
         run: ctest -V -S "ci/${{ matrix.script }}.ctest.cmake"
 
       - name: Upload test tesults
-        if: !cancelled()
+        if: (!cancelled())
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: Test Results (${{ matrix.script }})
@@ -80,7 +80,7 @@ jobs:
     needs: test
     name: Publish Results
     runs-on: ubuntu-latest
-    if: !cancelled()
+    if: (!cancelled())
     permissions:
       contents: read
       checks: write
