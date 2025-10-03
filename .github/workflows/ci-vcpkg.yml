@@ -42,7 +42,7 @@ jobs:
           fetch-depth: 0
 
       - name: Set up cmake and ninja
-        uses: lukka/get-cmake@2ecc21724e5215b0e567bc399a2602d2ecb48541 # v4.1.1
+        uses: lukka/get-cmake@628dd514bed37cb0a609e84a6186cbbaa2fc0140 # v4.1.2
 
       - name: Set up vcpkg
         uses: lukka/run-vcpkg@5e0cab206a5ea620130caf672fce3e4a6b5666a1 # v11.5
