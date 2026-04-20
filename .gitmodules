@@ -1,4 +1,4 @@
 [submodule "vcpkg"]
 	path = vcpkg
 	url = https://github.com/microsoft/vcpkg.git
-	branch = 2026.02.27
+	branch = 2026.03.18
