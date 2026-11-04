@@ -19,7 +19,7 @@ jobs:
         include:
           - os: windows-latest
             triplet: x64-windows-release
-          - os: macos-latest
+          - os: macos-15
             triplet: arm64-osx-release
           - os: ubuntu-latest
             triplet: x64-linux-release
