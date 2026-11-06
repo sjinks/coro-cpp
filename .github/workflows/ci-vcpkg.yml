@@ -49,16 +49,22 @@ jobs:
         id: cache-inputs
         shell: bash
         run: |
+          # vcpkg is a pinned Git submodule; its gitlink identifies the revision.
           echo "vcpkg=$(git rev-parse HEAD:vcpkg)" >> "$GITHUB_OUTPUT"
           echo "image=${ImageVersion:-unknown}" >> "$GITHUB_OUTPUT"
 
       - name: Set up vcpkg
         uses: lukka/run-vcpkg@b1a0dd252f06b9e25b3c022a9a03bd7a427fb6a2 # v11.6
+        with:
+          # CMake installs dependencies only after the binary cache is restored.
+          runVcpkgInstall: false
+          # run-vcpkg creates this directory and exports it for vcpkg.
+          binaryCachePath: ${{ runner.temp }}/vcpkg-binary-cache
 
       - name: Cache vcpkg packages
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
-          path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
+          path: ${{ runner.temp }}/vcpkg-binary-cache
           key: vcpkg-${{ runner.os }}-${{ runner.arch }}-${{ matrix.triplet }}-${{ hashFiles('vcpkg.json', 'vcpkg-configuration.json', 'ci/vcpkg.json', 'ci/vcpkg-configuration.json') }}-${{ steps.cache-inputs.outputs.vcpkg }}-${{ steps.cache-inputs.outputs.image }}
           restore-keys: |
             vcpkg-${{ runner.os }}-${{ runner.arch }}-${{ matrix.triplet }}-${{ hashFiles('vcpkg.json', 'vcpkg-configuration.json', 'ci/vcpkg.json', 'ci/vcpkg-configuration.json') }}-
