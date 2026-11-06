@@ -53,12 +53,18 @@ jobs:
           echo "vcpkg=$(git rev-parse HEAD:vcpkg)" >> "$GITHUB_OUTPUT"
           echo "image=${ImageVersion:-unknown}" >> "$GITHUB_OUTPUT"
 
+      - name: Create vcpkg binary cache directory
+        shell: bash
+        env:
+          VCPKG_CACHE_DIR: ${{ runner.temp }}/vcpkg-binary-cache
+        run: mkdir -p "$VCPKG_CACHE_DIR"
+
       - name: Set up vcpkg
         uses: lukka/run-vcpkg@b1a0dd252f06b9e25b3c022a9a03bd7a427fb6a2 # v11.6
         with:
           # CMake installs dependencies only after the binary cache is restored.
           runVcpkgInstall: false
-          # run-vcpkg creates this directory and exports it for vcpkg.
+          # run-vcpkg exports this directory as VCPKG_DEFAULT_BINARY_CACHE.
           binaryCachePath: ${{ runner.temp }}/vcpkg-binary-cache
 
       - name: Cache vcpkg packages
