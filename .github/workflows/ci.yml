@@ -37,7 +37,7 @@ jobs:
   build:
     needs: prepare
     name: Build and Test (${{ matrix.preset.description }})
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     strategy:
       fail-fast: false
       matrix:
@@ -75,7 +75,7 @@ jobs:
 
   build-ext:
     name: Build and Test (external dependencies)
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
     steps:
