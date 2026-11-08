@@ -49,9 +49,11 @@ jobs:
           languages: ${{ matrix.language }}
 
       - name: Install dependencies
+        if: matrix.language == 'c-cpp'
         uses: ./.github/actions/install-dependencies
 
       - name: Build
+        if: matrix.language == 'c-cpp'
         run: |
           cmake -B build -DBUILD_DOCS=OFF
           cmake --build build
