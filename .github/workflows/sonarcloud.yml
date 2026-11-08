@@ -36,8 +36,10 @@ jobs:
             ingest.codecov.io:443
             keybase.io:443
             motd.ubuntu.com:443
+            nodejs.org:443
             o26192.ingest.us.sentry.io:443
             packages.microsoft.com:443
+            release-assets.githubusercontent.com:443
             scanner.sonarcloud.io:443
             sonarcloud.io:443
             storage.googleapis.com:443
