@@ -59,7 +59,7 @@ jobs:
         run: cmake --build build --target coverage -j $(nproc)
 
       - name: Run sonar-scanner
-        uses: SonarSource/sonarqube-scan-action@e805d875275f728fac1885b413934be6d7c63f65 # v8
+        uses: SonarSource/sonarqube-scan-action@59202af334b4ba7b5db01b701b8e79f8b3bef0f4 # v8
         with:
           args: >
             --define sonar.cfamily.compile-commands=build/compile_commands.json
